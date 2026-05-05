@@ -42,10 +42,17 @@
   <main class="dash view" data-view="dashboard">
     <header class="dash-h">
       <h1>Dashboard</h1>
-      <p class="dash-sub">Waitlist signups + traffic overview.</p>
+      <p class="dash-sub">Everything you need to know about your waitlist + traffic.</p>
     </header>
 
-    <section class="stats">
+    <!-- ── Section: Headline KPIs ── -->
+    <h3 class="section-h">Snapshot</h3>
+    <section class="stats stats-8">
+      <article class="stat">
+        <div class="stat-label">Active subscribers</div>
+        <div class="stat-value" id="stat_active">—</div>
+        <div class="stat-trend muted" id="stat_unsub">—</div>
+      </article>
       <article class="stat">
         <div class="stat-label">Total signups</div>
         <div class="stat-value" id="stat_waitlistTotal">—</div>
@@ -57,25 +64,169 @@
         <div class="stat-trend" id="stat_visitsToday">—</div>
       </article>
       <article class="stat">
+        <div class="stat-label">Conversion</div>
+        <div class="stat-value" id="stat_convAll">—</div>
+        <div class="stat-trend muted">all-time signups / visits</div>
+      </article>
+      <article class="stat">
         <div class="stat-label">Today's signups</div>
         <div class="stat-value" id="stat_todayWaitlist">—</div>
-        <div class="stat-trend muted">last 24h</div>
+        <div class="stat-trend muted" id="stat_yesterdayWaitlist">—</div>
       </article>
       <article class="stat">
         <div class="stat-label">Today's visits</div>
         <div class="stat-value" id="stat_todayVisits">—</div>
-        <div class="stat-trend muted">last 24h</div>
+        <div class="stat-trend muted" id="stat_yesterdayVisits">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Avg signups / day</div>
+        <div class="stat-value" id="stat_avgSignups">—</div>
+        <div class="stat-trend muted">since launch</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Avg visits / day</div>
+        <div class="stat-value" id="stat_avgVisits">—</div>
+        <div class="stat-trend muted">since launch</div>
       </article>
     </section>
 
-    <section class="card">
-      <header class="card-h">
-        <h2>Visits — last 7 days</h2>
-        <span class="card-sub" id="chartTotal">—</span>
-      </header>
-      <div class="chart" id="chart"></div>
+    <!-- ── Section: Trends with deltas ── -->
+    <h3 class="section-h">Trends</h3>
+    <section class="stats stats-4">
+      <article class="stat">
+        <div class="stat-label">Signups · last 7 days</div>
+        <div class="stat-value" id="stat_signups7">—</div>
+        <div class="stat-trend" id="stat_signups7d">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Signups · last 30 days</div>
+        <div class="stat-value" id="stat_signups30">—</div>
+        <div class="stat-trend" id="stat_signups30d">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Visits · last 7 days</div>
+        <div class="stat-value" id="stat_visits7">—</div>
+        <div class="stat-trend" id="stat_visits7d">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Visits · last 30 days</div>
+        <div class="stat-value" id="stat_visits30">—</div>
+        <div class="stat-trend" id="stat_visits30d">—</div>
+      </article>
     </section>
 
+    <!-- ── Section: Email program ── -->
+    <h3 class="section-h">Email program</h3>
+    <section class="stats stats-4">
+      <article class="stat">
+        <div class="stat-label">Campaigns sent</div>
+        <div class="stat-value" id="stat_campSent">—</div>
+        <div class="stat-trend muted" id="stat_campDrafts">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Emails delivered</div>
+        <div class="stat-value" id="stat_emailsSent">—</div>
+        <div class="stat-trend muted" id="stat_emailsFailed">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Conversion · last 7d</div>
+        <div class="stat-value" id="stat_conv7">—</div>
+        <div class="stat-trend muted">signups / visits, 7d</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Conversion · last 30d</div>
+        <div class="stat-value" id="stat_conv30">—</div>
+        <div class="stat-trend muted">signups / visits, 30d</div>
+      </article>
+    </section>
+
+    <!-- ── Section: Time-series charts ── -->
+    <h3 class="section-h">Activity over time</h3>
+
+    <section class="card">
+      <header class="card-h">
+        <h2>Signups · last 30 days</h2>
+        <span class="card-sub" id="signups30Total">—</span>
+      </header>
+      <div class="chart chart-tall" id="chart_signups30"></div>
+    </section>
+
+    <div class="grid-2">
+      <section class="card">
+        <header class="card-h">
+          <h2>Visits · last 7 days</h2>
+          <span class="card-sub" id="chartTotal">—</span>
+        </header>
+        <div class="chart" id="chart"></div>
+      </section>
+      <section class="card">
+        <header class="card-h">
+          <h2>Visits · last 30 days</h2>
+          <span class="card-sub" id="visits30Total">—</span>
+        </header>
+        <div class="chart" id="chart_visits30"></div>
+      </section>
+    </div>
+
+    <!-- ── Section: When people show up ── -->
+    <h3 class="section-h">When people show up</h3>
+    <div class="grid-2">
+      <section class="card">
+        <header class="card-h"><h2>Signups · by hour (UTC)</h2><span class="card-sub">all time</span></header>
+        <div class="chart chart-mini" id="chart_signupHours"></div>
+      </section>
+      <section class="card">
+        <header class="card-h"><h2>Signups · by weekday</h2><span class="card-sub">all time</span></header>
+        <div class="chart chart-mini" id="chart_signupWeekdays"></div>
+      </section>
+    </div>
+    <div class="grid-2">
+      <section class="card">
+        <header class="card-h"><h2>Visits · by hour (UTC)</h2><span class="card-sub">30d</span></header>
+        <div class="chart chart-mini" id="chart_visitHours"></div>
+      </section>
+      <section class="card">
+        <header class="card-h"><h2>Visits · by weekday</h2><span class="card-sub">30d</span></header>
+        <div class="chart chart-mini" id="chart_visitWeekdays"></div>
+      </section>
+    </div>
+
+    <!-- ── Section: Where they come from ── -->
+    <h3 class="section-h">Where people come from</h3>
+    <div class="grid-4">
+      <section class="card">
+        <header class="card-h"><h2>Top referrers</h2><span class="card-sub">30d</span></header>
+        <ul class="rank-list" id="referrers"><li class="empty">—</li></ul>
+      </section>
+      <section class="card">
+        <header class="card-h"><h2>Top countries</h2><span class="card-sub">visits 30d</span></header>
+        <ul class="rank-list" id="countries"><li class="empty">—</li></ul>
+      </section>
+      <section class="card">
+        <header class="card-h"><h2>Top pages</h2><span class="card-sub">30d</span></header>
+        <ul class="rank-list" id="paths"><li class="empty">—</li></ul>
+      </section>
+      <section class="card">
+        <header class="card-h"><h2>Top browsers</h2><span class="card-sub">30d</span></header>
+        <ul class="rank-list" id="browsers"><li class="empty">—</li></ul>
+      </section>
+    </div>
+
+    <!-- ── Section: Signup mix ── -->
+    <h3 class="section-h">Signup mix</h3>
+    <div class="grid-2">
+      <section class="card">
+        <header class="card-h"><h2>Signup form used</h2><span class="card-sub">all time</span></header>
+        <ul class="rank-list" id="sources"><li class="empty">—</li></ul>
+      </section>
+      <section class="card">
+        <header class="card-h"><h2>Signups by country</h2><span class="card-sub">all time</span></header>
+        <ul class="rank-list" id="signupCountries"><li class="empty">—</li></ul>
+      </section>
+    </div>
+
+    <!-- ── Section: Live feeds ── -->
+    <h3 class="section-h">Latest activity</h3>
     <div class="grid">
       <section class="card">
         <header class="card-h">
@@ -85,27 +236,25 @@
         <div class="table-wrap">
           <table class="signup-table" id="signupTable">
             <thead>
-              <tr><th>Email</th><th class="t-right">Country</th><th class="t-right">When</th></tr>
+              <tr><th>Email</th><th>Source</th><th class="t-right">Country</th><th class="t-right">When</th></tr>
             </thead>
-            <tbody>
-              <tr><td colspan="3" class="empty">Loading…</td></tr>
-            </tbody>
+            <tbody><tr><td colspan="4" class="empty">Loading…</td></tr></tbody>
           </table>
         </div>
       </section>
-
       <div class="grid-side">
         <section class="card">
-          <header class="card-h"><h2>Top referrers</h2><span class="card-sub">30d</span></header>
-          <ul class="rank-list" id="referrers"><li class="empty">—</li></ul>
+          <header class="card-h"><h2>Recent visits</h2><span class="card-sub" id="recentVisitCount">—</span></header>
+          <div class="table-wrap">
+            <table class="signup-table" id="visitTable">
+              <thead><tr><th>Page</th><th class="t-right">Country</th><th class="t-right">When</th></tr></thead>
+              <tbody><tr><td colspan="3" class="empty">Loading…</td></tr></tbody>
+            </table>
+          </div>
         </section>
         <section class="card">
-          <header class="card-h"><h2>Top countries</h2><span class="card-sub">30d</span></header>
-          <ul class="rank-list" id="countries"><li class="empty">—</li></ul>
-        </section>
-        <section class="card">
-          <header class="card-h"><h2>Top pages</h2><span class="card-sub">30d</span></header>
-          <ul class="rank-list" id="paths"><li class="empty">—</li></ul>
+          <header class="card-h"><h2>Recent campaigns</h2><span class="card-sub" id="recentCampCount">—</span></header>
+          <ul class="rank-list" id="recentCampaigns"><li class="empty">—</li></ul>
         </section>
       </div>
     </div>
@@ -141,9 +290,7 @@
               <th class="t-right"></th>
             </tr>
           </thead>
-          <tbody>
-            <tr><td colspan="6" class="empty">Loading…</td></tr>
-          </tbody>
+          <tbody><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -159,35 +306,30 @@
         </div>
         <button class="btn-ghost" id="composerCloseBtn" aria-label="Close">✕</button>
       </header>
-
       <div class="modal-body composer">
         <div class="composer-form">
           <label class="field">
             <span class="field-label">Subject</span>
             <input type="text" id="cmp_subject" placeholder="e.g. Cohost v0.2 — drop just shipped" maxlength="200" />
           </label>
-
           <div class="field-row">
             <label class="field">
               <span class="field-label">Template</span>
               <select id="cmp_template"></select>
             </label>
             <label class="field">
-              <span class="field-label">Preheader <span class="field-hint">(inbox preview text, optional)</span></span>
+              <span class="field-label">Preheader <span class="field-hint">(inbox preview, optional)</span></span>
               <input type="text" id="cmp_preheader" placeholder="One-line preview shown in inbox lists." maxlength="200" />
             </label>
           </div>
-
           <label class="field">
             <span class="field-label">Headline <span class="field-hint">(big H1, defaults to subject)</span></span>
             <input type="text" id="cmp_headline" placeholder="What you want shouted at the top of the email." maxlength="200" />
           </label>
-
           <label class="field">
             <span class="field-label">Body</span>
             <textarea id="cmp_body" rows="10" placeholder="<p>Write your email body here. Basic HTML works — &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a href&gt;, &lt;ul&gt;&lt;li&gt;, &lt;br&gt;.</p>"></textarea>
           </label>
-
           <div class="field-row">
             <label class="field">
               <span class="field-label">CTA text <span class="field-hint">(optional button)</span></span>
@@ -199,7 +341,6 @@
             </label>
           </div>
         </div>
-
         <div class="composer-preview">
           <div class="preview-h">
             <span class="field-label">Preview</span>
@@ -208,7 +349,6 @@
           <iframe id="cmp_preview" title="Email preview"></iframe>
         </div>
       </div>
-
       <footer class="modal-f">
         <span class="form-msg" id="cmp_msg"></span>
         <div class="modal-f-actions">

@@ -359,6 +359,91 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 [data-fade]:nth-child(8) { animation-delay: .28s; }
 @keyframes fadeIn { to { opacity: 1; transform: none; } }
 
+/* ── Section headers ── */
+.section-h {
+  margin: 28px 0 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-faint);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.section-h:first-of-type { margin-top: 0; }
+
+/* ── Stat grid variants ── */
+.stats-8 { grid-template-columns: repeat(8, 1fr); }
+.stats-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1100px) {
+  .stats-8 { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 720px) {
+  .stats-8 { grid-template-columns: repeat(2, 1fr); }
+  .stats-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Stat trend deltas */
+.stat-trend.up   { color: var(--ok); }
+.stat-trend.down { color: var(--accent); }
+.stat-trend.flat { color: var(--fg-faint); }
+
+/* ── Grid variants ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.grid-2 .card { margin-bottom: 0; }
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.grid-4 .card { margin-bottom: 0; }
+@media (max-width: 1100px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ── Chart variants ── */
+.chart-tall { height: 260px; }
+.chart-mini { height: 140px; padding: 16px 18px; gap: 4px; }
+.chart-dense { gap: 4px; }
+.chart-dense .bar-label { font-size: 9px; }
+.chart-dense .bar-fill { border-radius: 3px 3px 0 0; }
+
+/* ── Mini badges ── */
+.mini-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: rgba(239,68,68,.10);
+  color: var(--accent);
+  border: 1px solid rgba(239,68,68,.30);
+  border-radius: 999px;
+}
+
+/* Campaign row in rank list */
+.campaign-row .rank-name {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--fg);
+}
+.campaign-row .rank-count {
+  display: inline-flex;
+  align-items: center;
+}
+
 /* ── Tabs ── */
 .tabs {
   display: inline-flex;

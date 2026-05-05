@@ -6,7 +6,6 @@
   const $  = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 
-  // ── Common ──
   document.getElementById('logoutBtn')?.addEventListener('click', async () => {
     await fetch('/api/logout', { method: 'POST' }).catch(() => {});
     location.href = '/login';
@@ -47,63 +46,184 @@
   function renderStats(data) {
     const w = data.waitlist || {};
     const v = data.visits || {};
-    setText('#stat_waitlistTotal', fmt(w.total));
-    setText('#stat_visitsTotal',   fmt(v.total));
-    setText('#stat_todayWaitlist', fmt(w.today));
-    setText('#stat_todayVisits',   fmt(v.today));
-    setText('#stat_waitlistToday', `+${fmt(w.today)} today`);
-    setText('#stat_visitsToday',   `+${fmt(v.today)} today`);
-    renderChart(v.last7Days || []);
-    renderSignups(w.recent || []);
-    setText('#recentCount', `${fmt((w.recent || []).length)} shown`);
+    const c = data.campaigns || {};
+    const conv = data.conversion || {};
+
+    // ── Snapshot row ──
+    setText('#stat_active',         fmt(w.active));
+    setText('#stat_unsub',          `${fmt(w.unsubscribed)} unsubscribed`);
+    setText('#stat_waitlistTotal',  fmt(w.total));
+    setText('#stat_waitlistToday',  `+${fmt(w.today)} today`);
+    setText('#stat_visitsTotal',    fmt(v.total));
+    setText('#stat_visitsToday',    `+${fmt(v.today)} today`);
+    setText('#stat_convAll',        `${pctFmt(conv.allTime)}%`);
+    setText('#stat_todayWaitlist',  fmt(w.today));
+    setText('#stat_yesterdayWaitlist', `yesterday: ${fmt(w.yesterday)}`);
+    setText('#stat_todayVisits',    fmt(v.today));
+    setText('#stat_yesterdayVisits',`yesterday: ${fmt(v.yesterday)}`);
+    setText('#stat_avgSignups',     fmt(round1(w.avgPerDay)));
+    setText('#stat_avgVisits',      fmt(round1(v.avgPerDay)));
+
+    // ── Trends row (with delta vs prior period) ──
+    setText('#stat_signups7',  fmt(w.last7));
+    setTrend('#stat_signups7d',  delta(w.last7, w.prev7));
+    setText('#stat_signups30', fmt(w.last30));
+    setTrend('#stat_signups30d', delta(w.last30, w.prev30));
+    setText('#stat_visits7',   fmt(v.last7));
+    setTrend('#stat_visits7d',   delta(v.last7, v.prev7));
+    setText('#stat_visits30',  fmt(v.last30));
+    setTrend('#stat_visits30d',  delta(v.last30, v.prev30));
+
+    // ── Email program row ──
+    setText('#stat_campSent',     fmt(c.sent));
+    setText('#stat_campDrafts',   `${fmt(c.drafts)} draft${c.drafts === 1 ? '' : 's'}`);
+    setText('#stat_emailsSent',   fmt(c.totalEmailsSent));
+    setText('#stat_emailsFailed', `${fmt(c.totalEmailsFailed)} failed`);
+    setText('#stat_conv7',        `${pctFmt(conv.last7)}%`);
+    setText('#stat_conv30',       `${pctFmt(conv.last30)}%`);
+
+    // ── Charts ──
+    renderBars('#chart',                v.last7Days || [],   'days');
+    renderBars('#chart_visits30',       v.last30Days || [],  'days', true);
+    renderBars('#chart_signups30',      w.byDay30 || [],     'days', true);
+    renderBuckets('#chart_signupHours',    w.byHour || [],    24, hourLabel);
+    renderBuckets('#chart_signupWeekdays', w.byWeekday || [], 7,  weekdayLabel);
+    renderBuckets('#chart_visitHours',     v.byHour || [],    24, hourLabel);
+    renderBuckets('#chart_visitWeekdays',  v.byWeekday || [], 7,  weekdayLabel);
+
+    // Chart subheads
+    setText('#chartTotal',       `${fmt(sum((v.last7Days || []).map(d => d.count)))} visits`);
+    setText('#visits30Total',    `${fmt(sum((v.last30Days || []).map(d => d.count)))} visits`);
+    setText('#signups30Total',   `${fmt(sum((w.byDay30 || []).map(d => d.count)))} signups`);
+
+    // ── Lists ──
     renderRanks('#referrers', (v.topReferrers || []).map(r => ({ name: r.host, count: r.count })));
     renderRanks('#countries', (v.topCountries || []).map(r => ({ name: countryFlag(r.country) + ' ' + r.country, count: r.count })));
     renderRanks('#paths',     (v.topPaths || []).map(r => ({ name: r.path, count: r.count })));
-    const sevenSum = (v.last7Days || []).reduce((a, b) => a + b.count, 0);
-    setText('#chartTotal', `${fmt(sevenSum)} visits`);
+    renderRanks('#browsers',  (v.topBrowsers || []).map(r => ({ name: r.name, count: r.count })));
+    renderRanks('#sources',   (w.bySource || []).map(r => ({ name: prettySource(r.source), count: r.count })));
+    renderRanks('#signupCountries', (w.byCountry || []).map(r => ({ name: countryFlag(r.country) + ' ' + r.country, count: r.count })));
+
+    // ── Tables ──
+    renderSignups(w.recent || []);
+    setText('#recentCount', `${fmt((w.recent || []).length)} shown`);
+    renderVisits(v.recent || []);
+    setText('#recentVisitCount', `${fmt((v.recent || []).length)} shown`);
+    renderRecentCampaigns(c.recent || []);
+    setText('#recentCampCount', `${fmt((c.recent || []).length)} shown`);
+
+    // Updated stamp
     const t = new Date();
     setText('#updated', `Updated ${pad(t.getHours())}:${pad(t.getMinutes())}`);
   }
 
-  function renderChart(days) {
-    const chart = document.getElementById('chart');
+  // ── Charts ──
+  function renderBars(sel, days, mode, dense = false) {
+    const chart = document.querySelector(sel);
     if (!chart) return;
     chart.innerHTML = '';
+    if (dense) chart.classList.add('chart-dense');
     const max = Math.max(1, ...days.map(d => d.count));
     days.forEach((d, i) => {
       const wrap = document.createElement('div');
       wrap.className = 'bar-wrap';
-      wrap.style.setProperty('animation-delay', `${i * 40}ms`);
-      const bar = document.createElement('div'); bar.className = 'bar';
+      wrap.style.setProperty('animation-delay', `${i * 18}ms`);
+      const bar  = document.createElement('div'); bar.className = 'bar';
       const fill = document.createElement('div'); fill.className = 'bar-fill';
       fill.dataset.count = String(d.count);
       bar.appendChild(fill);
       const label = document.createElement('div'); label.className = 'bar-label';
-      label.textContent = shortDay(d.date);
+      label.textContent = dense ? shortDate(d.date) : shortDay(d.date);
       wrap.appendChild(bar); wrap.appendChild(label);
       chart.appendChild(wrap);
       requestAnimationFrame(() => { fill.style.height = `${(d.count / max) * 100}%`; });
     });
   }
 
+  function renderBuckets(sel, arr, n, labelFn) {
+    const chart = document.querySelector(sel);
+    if (!chart) return;
+    chart.innerHTML = '';
+    chart.classList.add('chart-dense');
+    const data = (arr.length === n ? arr : new Array(n).fill(0)).slice(0, n);
+    const max = Math.max(1, ...data);
+    data.forEach((c, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'bar-wrap';
+      wrap.style.setProperty('animation-delay', `${i * 12}ms`);
+      const bar  = document.createElement('div'); bar.className = 'bar';
+      const fill = document.createElement('div'); fill.className = 'bar-fill';
+      fill.dataset.count = String(c);
+      bar.appendChild(fill);
+      const label = document.createElement('div'); label.className = 'bar-label';
+      label.textContent = labelFn(i);
+      wrap.appendChild(bar); wrap.appendChild(label);
+      chart.appendChild(wrap);
+      requestAnimationFrame(() => { fill.style.height = `${(c / max) * 100}%`; });
+    });
+  }
+
   function renderSignups(rows) {
-    const tbody = document.querySelector('#signupTable tbody');
+    const tbody = $('#signupTable tbody');
     if (!tbody) return;
-    tbody.innerHTML = '';
     if (!rows.length) {
-      tbody.innerHTML = `<tr><td colspan="3" class="empty">No signups yet — once people start joining, they'll show here.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="empty">No signups yet — once people start joining, they'll show here.</td></tr>`;
       return;
     }
+    tbody.innerHTML = '';
+    rows.forEach((r, i) => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-fade', '');
+      tr.style.setProperty('animation-delay', `${Math.min(i, 8) * 30}ms`);
+      const unsubBadge = r.unsubscribed ? ` <span class="mini-badge">unsub</span>` : '';
+      tr.innerHTML = `
+        <td><span class="email">${escapeHtml(r.email)}</span>${unsubBadge}</td>
+        <td><span class="country">${escapeHtml(prettySource(r.source))}</span></td>
+        <td class="t-right"><span class="country">${r.country ? `${countryFlag(r.country)} ${escapeHtml(r.country)}` : '—'}</span></td>
+        <td class="t-right"><span class="when">${escapeHtml(timeAgo(r.createdAt))}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderVisits(rows) {
+    const tbody = $('#visitTable tbody');
+    if (!tbody) return;
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="3" class="empty">No visits yet.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = '';
     rows.forEach((r, i) => {
       const tr = document.createElement('tr');
       tr.setAttribute('data-fade', '');
       tr.style.setProperty('animation-delay', `${Math.min(i, 8) * 30}ms`);
       tr.innerHTML = `
-        <td><span class="email">${escapeHtml(r.email)}</span></td>
+        <td><span class="email">${escapeHtml(r.path)}</span></td>
         <td class="t-right"><span class="country">${r.country ? `${countryFlag(r.country)} ${escapeHtml(r.country)}` : '—'}</span></td>
         <td class="t-right"><span class="when">${escapeHtml(timeAgo(r.createdAt))}</span></td>
       `;
       tbody.appendChild(tr);
+    });
+  }
+
+  function renderRecentCampaigns(rows) {
+    const ul = $('#recentCampaigns');
+    if (!ul) return;
+    if (!rows.length) {
+      ul.innerHTML = `<li class="empty">No campaigns yet — switch to the Campaigns tab to compose one.</li>`;
+      return;
+    }
+    ul.innerHTML = '';
+    rows.forEach(c => {
+      const li = document.createElement('li');
+      li.className = 'rank-row campaign-row';
+      const progress = c.status === 'sent' || c.status === 'sending' ? `${fmt(c.sentCount)}/${fmt(c.recipientCount)}` : '—';
+      li.innerHTML = `
+        <span class="rank-name">${escapeHtml(c.subject)}</span>
+        <span class="rank-count">${statusBadge(c.status)} <span style="margin-left:8px;">${progress}</span></span>
+      `;
+      ul.appendChild(li);
     });
   }
 
@@ -287,7 +407,6 @@
   ['#cmp_subject','#cmp_template','#cmp_preheader','#cmp_headline','#cmp_body','#cmp_cta_text','#cmp_cta_url']
     .forEach(s => $(s).addEventListener('input', debounce(refreshPreview, 250)));
 
-  // Save
   $('#cmp_saveBtn').addEventListener('click', async () => {
     const payload = readForm();
     if (!payload.subject) return setText('#cmp_msg', 'Subject required.', 'err');
@@ -307,7 +426,6 @@
     }
   });
 
-  // Delete
   $('#cmp_deleteBtn').addEventListener('click', async () => {
     if (!editingId) return;
     if (!confirm('Delete this draft? This cannot be undone.')) return;
@@ -322,7 +440,6 @@
     }
   });
 
-  // ── Test send modal ──
   $('#cmp_testBtn').addEventListener('click', async () => {
     if (!editingId) {
       setText('#cmp_msg', 'Save the draft first, then send a test.', 'err');
@@ -354,7 +471,6 @@
     }
   });
 
-  // ── Send confirm modal ──
   $('#cmp_sendBtn').addEventListener('click', async () => {
     if (!editingId) {
       setText('#cmp_msg', 'Save the draft first, then send.', 'err');
@@ -396,7 +512,7 @@
     }
   });
 
-  // ── Client-side preview (mirrors functions/lib/email.js shell, simplified) ──
+  // ── Client-side preview ──
   function clientPreview(c) {
     const subject   = c.subject || '(no subject)';
     const headline  = c.headline || subject;
@@ -427,10 +543,7 @@
       .foot a { color:#8a8a8a; text-decoration:underline; }
       </style></head><body>
       <div class="card">
-        <div class="hero">
-          <img src="assets/cohost-app-icon.png" alt="" />
-          <div class="name">Cohost</div>
-        </div>
+        <div class="hero"><img src="assets/cohost-app-icon.png" alt="" /><div class="name">Cohost</div></div>
         <div class="div"></div>
         <div class="body">
           ${badgeRow}
@@ -465,8 +578,33 @@
       if (kind === 'err') el.classList.add('err');
     }
   }
+  function setTrend(sel, d) {
+    const el = document.querySelector(sel);
+    if (!el) return;
+    el.classList.remove('up', 'down', 'flat', 'muted');
+    if (d.direction === 'up')   el.classList.add('up');
+    if (d.direction === 'down') el.classList.add('down');
+    if (d.direction === 'flat') el.classList.add('flat');
+    el.textContent = d.text;
+  }
+  function delta(curr, prev) {
+    if (!prev && !curr) return { direction: 'flat', text: '— vs prior period' };
+    if (!prev)          return { direction: 'up',   text: `▲ new vs prior period` };
+    const diff = curr - prev;
+    const pctChange = (diff / prev) * 100;
+    if (Math.abs(pctChange) < 0.5) return { direction: 'flat', text: '~ flat vs prior period' };
+    const arrow = diff > 0 ? '▲' : '▼';
+    const sign  = diff > 0 ? '+' : '';
+    return {
+      direction: diff > 0 ? 'up' : 'down',
+      text: `${arrow} ${sign}${pctFmt(pctChange)}% vs prior`,
+    };
+  }
   function fmt(n) { return Number(n || 0).toLocaleString(); }
+  function pctFmt(n) { return Number(n || 0).toFixed(Math.abs(n) < 10 ? 1 : 0); }
+  function round1(n) { return Math.round(Number(n || 0) * 10) / 10; }
   function pad(n) { return String(n).padStart(2, '0'); }
+  function sum(arr) { return arr.reduce((a, b) => a + b, 0); }
   function escapeHtml(s) {
     return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   }
@@ -474,6 +612,14 @@
     try { return new Date(iso + 'T00:00:00Z').toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 3); }
     catch (_) { return iso.slice(5); }
   }
+  function shortDate(iso) {
+    try {
+      const d = new Date(iso + 'T00:00:00Z');
+      return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
+    } catch (_) { return iso.slice(5); }
+  }
+  function hourLabel(h) { return h % 6 === 0 ? `${h}` : ''; }
+  function weekdayLabel(w) { return ['S','M','T','W','T','F','S'][w] || ''; }
   function timeAgo(iso) {
     if (!iso) return '—';
     const date = new Date(iso.replace(' ', 'T') + 'Z');
@@ -489,6 +635,12 @@
     const A = 0x1F1E6;
     const c = code.toUpperCase();
     return String.fromCodePoint(A + c.charCodeAt(0) - 65, A + c.charCodeAt(1) - 65);
+  }
+  function prettySource(s) {
+    if (!s) return 'unknown';
+    if (s === 'hero') return 'Hero form';
+    if (s === 'cta')  return 'CTA form';
+    return s;
   }
   function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
 

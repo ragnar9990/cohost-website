@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Admin — Cohost</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/">
+        <img src="assets/cohost-app-icon.png" alt="" />
+        <span class="brand-name">Cohost</span>
+        <span class="brand-tag">Admin</span>
+      </a>
+      <nav class="tabs">
+        <button class="tab is-active" data-tab="dashboard">Dashboard</button>
+        <button class="tab" data-tab="campaigns">Campaigns</button>
+      </nav>
+      <div class="topbar-actions">
+        <span class="updated" id="updated"></span>
+        <button class="btn-ghost" id="refreshBtn" title="Refresh data">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7a5 5 0 1 1-2-4M12 2v3.5H8.5"/></svg>
+          <span>Refresh</span>
+        </button>
+        <button class="btn-ghost" id="logoutBtn">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3-3-3-3M12 8H5M5 2H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h2"/></svg>
+          <span>Sign out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════ DASHBOARD VIEW ════════════════════ -->
+  <main class="dash view" data-view="dashboard">
+    <header class="dash-h">
+      <h1>Dashboard</h1>
+      <p class="dash-sub">Waitlist signups + traffic overview.</p>
+    </header>
+
+    <section class="stats">
+      <article class="stat">
+        <div class="stat-label">Total signups</div>
+        <div class="stat-value" id="stat_waitlistTotal">—</div>
+        <div class="stat-trend" id="stat_waitlistToday">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Total visits</div>
+        <div class="stat-value" id="stat_visitsTotal">—</div>
+        <div class="stat-trend" id="stat_visitsToday">—</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Today's signups</div>
+        <div class="stat-value" id="stat_todayWaitlist">—</div>
+        <div class="stat-trend muted">last 24h</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Today's visits</div>
+        <div class="stat-value" id="stat_todayVisits">—</div>
+        <div class="stat-trend muted">last 24h</div>
+      </article>
+    </section>
+
+    <section class="card">
+      <header class="card-h">
+        <h2>Visits — last 7 days</h2>
+        <span class="card-sub" id="chartTotal">—</span>
+      </header>
+      <div class="chart" id="chart"></div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <header class="card-h">
+          <h2>Recent signups</h2>
+          <span class="card-sub" id="recentCount">—</span>
+        </header>
+        <div class="table-wrap">
+          <table class="signup-table" id="signupTable">
+            <thead>
+              <tr><th>Email</th><th class="t-right">Country</th><th class="t-right">When</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="3" class="empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="grid-side">
+        <section class="card">
+          <header class="card-h"><h2>Top referrers</h2><span class="card-sub">30d</span></header>
+          <ul class="rank-list" id="referrers"><li class="empty">—</li></ul>
+        </section>
+        <section class="card">
+          <header class="card-h"><h2>Top countries</h2><span class="card-sub">30d</span></header>
+          <ul class="rank-list" id="countries"><li class="empty">—</li></ul>
+        </section>
+        <section class="card">
+          <header class="card-h"><h2>Top pages</h2><span class="card-sub">30d</span></header>
+          <ul class="rank-list" id="paths"><li class="empty">—</li></ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- ════════════════════ CAMPAIGNS VIEW ════════════════════ -->
+  <main class="dash view is-hidden" data-view="campaigns">
+    <header class="dash-h dash-h-row">
+      <div>
+        <h1>Campaigns</h1>
+        <p class="dash-sub">Send marketing emails to your waitlist. <strong id="subscriberCount">—</strong> active subscribers.</p>
+      </div>
+      <button class="btn-primary" id="newCampaignBtn">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
+        <span>New campaign</span>
+      </button>
+    </header>
+
+    <section class="card">
+      <header class="card-h">
+        <h2>All campaigns</h2>
+        <span class="card-sub" id="campaignsCount">—</span>
+      </header>
+      <div class="table-wrap">
+        <table class="signup-table" id="campaignsTable">
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Template</th>
+              <th class="t-right">Status</th>
+              <th class="t-right">Sent</th>
+              <th class="t-right">When</th>
+              <th class="t-right"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6" class="empty">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ════════════════════ COMPOSER MODAL ════════════════════ -->
+  <div class="modal-backdrop is-hidden" id="composer" role="dialog" aria-modal="true">
+    <div class="modal modal-wide">
+      <header class="modal-h">
+        <div>
+          <h2 id="composerTitle">New campaign</h2>
+          <p class="modal-sub" id="composerSub">Compose your email. Save as draft, send a preview, or broadcast.</p>
+        </div>
+        <button class="btn-ghost" id="composerCloseBtn" aria-label="Close">✕</button>
+      </header>
+
+      <div class="modal-body composer">
+        <div class="composer-form">
+          <label class="field">
+            <span class="field-label">Subject</span>
+            <input type="text" id="cmp_subject" placeholder="e.g. Cohost v0.2 — drop just shipped" maxlength="200" />
+          </label>
+
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">Template</span>
+              <select id="cmp_template"></select>
+            </label>
+            <label class="field">
+              <span class="field-label">Preheader <span class="field-hint">(inbox preview text, optional)</span></span>
+              <input type="text" id="cmp_preheader" placeholder="One-line preview shown in inbox lists." maxlength="200" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="field-label">Headline <span class="field-hint">(big H1, defaults to subject)</span></span>
+            <input type="text" id="cmp_headline" placeholder="What you want shouted at the top of the email." maxlength="200" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Body</span>
+            <textarea id="cmp_body" rows="10" placeholder="<p>Write your email body here. Basic HTML works — &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a href&gt;, &lt;ul&gt;&lt;li&gt;, &lt;br&gt;.</p>"></textarea>
+          </label>
+
+          <div class="field-row">
+            <label class="field">
+              <span class="field-label">CTA text <span class="field-hint">(optional button)</span></span>
+              <input type="text" id="cmp_cta_text" placeholder="e.g. Try it now" maxlength="60" />
+            </label>
+            <label class="field">
+              <span class="field-label">CTA URL</span>
+              <input type="url" id="cmp_cta_url" placeholder="https://…" maxlength="500" />
+            </label>
+          </div>
+        </div>
+
+        <div class="composer-preview">
+          <div class="preview-h">
+            <span class="field-label">Preview</span>
+            <button class="btn-ghost btn-sm" id="cmp_refreshPreview">Refresh</button>
+          </div>
+          <iframe id="cmp_preview" title="Email preview"></iframe>
+        </div>
+      </div>
+
+      <footer class="modal-f">
+        <span class="form-msg" id="cmp_msg"></span>
+        <div class="modal-f-actions">
+          <button class="btn-ghost" id="cmp_deleteBtn" hidden>Delete</button>
+          <button class="btn-ghost" id="cmp_saveBtn">Save draft</button>
+          <button class="btn-ghost" id="cmp_testBtn">Send test…</button>
+          <button class="btn-primary" id="cmp_sendBtn">Send to all</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ════════════════════ TEST EMAIL PROMPT ════════════════════ -->
+  <div class="modal-backdrop is-hidden" id="testModal" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header class="modal-h">
+        <h2>Send a test</h2>
+        <button class="btn-ghost" id="testCloseBtn" aria-label="Close">✕</button>
+      </header>
+      <div class="modal-body">
+        <p class="modal-sub">A single preview email — subject prefixed with <code>[TEST]</code>. Save first if you've made changes.</p>
+        <label class="field">
+          <span class="field-label">Send to</span>
+          <input type="email" id="test_email" placeholder="you@example.com" />
+        </label>
+      </div>
+      <footer class="modal-f">
+        <span class="form-msg" id="test_msg"></span>
+        <div class="modal-f-actions">
+          <button class="btn-ghost" id="testCancelBtn">Cancel</button>
+          <button class="btn-primary" id="testSendBtn">Send</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ════════════════════ SEND CONFIRM ════════════════════ -->
+  <div class="modal-backdrop is-hidden" id="sendModal" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header class="modal-h">
+        <h2>Send to all subscribers?</h2>
+        <button class="btn-ghost" id="sendCloseBtn" aria-label="Close">✕</button>
+      </header>
+      <div class="modal-body">
+        <p class="modal-sub">This will email <strong id="sendCount">—</strong> active subscriber<span id="sendCountS">s</span>. Once sent, the campaign cannot be edited or undone.</p>
+        <p class="modal-sub" style="margin-top:8px;">Type <code>SEND</code> to confirm.</p>
+        <label class="field">
+          <input type="text" id="send_confirm" placeholder="SEND" autocomplete="off" />
+        </label>
+      </div>
+      <footer class="modal-f">
+        <span class="form-msg" id="send_msg"></span>
+        <div class="modal-f-actions">
+          <button class="btn-ghost" id="sendCancelBtn">Cancel</button>
+          <button class="btn-primary btn-danger" id="sendConfirmBtn" disabled>Send to all</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="admin.js" defer></script>
+</body>
+</html>

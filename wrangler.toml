@@ -1,0 +1,17 @@
+name = "cohost-website"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "."
+
+# D1 database — stores waitlist signups + visit tracking. After creating the DB
+# (`npx wrangler d1 create cohost-data`), paste the database_id from the output
+# below and redeploy. Without this, the admin dashboard won't have data to show.
+[[d1_databases]]
+binding       = "DB"
+database_name = "cohost-data"
+database_id   = "1c869535-c82a-40fd-909f-d12af8664b81"
+
+# Env vars get set via the dashboard or:
+#   wrangler pages secret put RESEND_API_KEY  --project-name=cohost-website
+#   wrangler pages secret put OWNER_EMAIL     --project-name=cohost-website
+#   wrangler pages secret put ADMIN_PASSWORD  --project-name=cohost-website
+#   wrangler pages secret put ADMIN_SECRET    --project-name=cohost-website

@@ -1,0 +1,17 @@
+{
+  "name": "cohost-website",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Cohost landing page — static site + Cloudflare Pages waitlist function",
+  "scripts": {
+    "dev": "wrangler pages dev . --compatibility-date=2024-09-23",
+    "deploy": "wrangler pages deploy . --project-name=cohost-website",
+    "tail": "wrangler pages deployment tail --project-name=cohost-website"
+  },
+  "dependencies": {
+    "resend": "^4.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.84.0"
+  }
+}

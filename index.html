@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Cohost — stream like there are two of you</title>
+  <meta name="description" content="The AI cohost reads your chat, flags trolls, and replies in your voice while you focus on the game. Multistream to Twitch, YouTube, and Kick from one window." />
+
+  <meta property="og:title" content="Cohost — stream like there are two of you" />
+  <meta property="og:description" content="An AI cohost that actually understands chat. Multistream to Twitch, YouTube and Kick from one window." />
+  <meta property="og:image" content="assets/og.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@CohostLive" />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/favicon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ════════════════════ NAV ════════════════════ -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="#top" aria-label="Cohost home">
+        <img src="assets/cohost-app-icon.png" alt="" />
+        <span>Cohost</span>
+        <span class="nav-version">v0.1</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#sidekick">Sidekick</a>
+        <a href="#multistream">Multistream</a>
+        <a href="#studio">Studio</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="nav-x" href="https://x.com/CohostLive" target="_blank" rel="noopener" aria-label="Cohost on X">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a class="nav-cta" href="#waitlist">Join waitlist</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ════════════════════ HERO ════════════════════ -->
+    <section class="hero">
+      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-grid"></div>
+      <div class="hero-noise"></div>
+
+      <div class="hero-inner">
+        <div class="hero-pill">
+          <span class="hero-pill-pulse">
+            <span class="hero-pill-dot"></span>
+            <span class="hero-pill-ring"></span>
+          </span>
+          <span>Now in alpha</span>
+          <span class="hero-pill-sep">·</span>
+          <span>By invite only</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="hero-line"><span class="word">Stream</span> <span class="word">like</span></span>
+          <span class="hero-line"><span class="word">there</span> <span class="word">are</span></span>
+          <span class="hero-line"><span class="word"><em>two</em></span> <span class="word">of</span> <span class="word">you.</span></span>
+        </h1>
+
+        <p class="hero-sub">
+          The AI cohost reads your chat, flags trolls, and replies in your voice while you focus on the game. Multistream to Twitch, YouTube, and Kick from one window.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#waitlist" class="btn-primary btn-lg">
+            <span class="btn-label">Join the waitlist</span>
+            <svg class="btn-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"/></svg>
+          </a>
+          <a href="#sidekick" class="btn-ghost btn-lg">
+            <span>See it work</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Stat strip — discrete metrics under the hero -->
+      <div class="hero-stats">
+        <div class="hero-stats-inner">
+          <div class="stat-item">
+            <span class="stat-num">3</span>
+            <span class="stat-label">platforms<br>per stream</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">60</span>
+            <span class="stat-label">fps<br>broadcast</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">~80</span>
+            <span class="stat-label">ms voice<br>latency</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">0</span>
+            <span class="stat-label">other apps<br>required</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════ MARQUEE ════════════════════ -->
+    <section class="marquee" aria-hidden="true">
+      <div class="marquee-edge marquee-edge-l"></div>
+      <div class="marquee-edge marquee-edge-r"></div>
+      <div class="marquee-track">
+        <div class="marquee-row">
+          <span class="marquee-label">Streams to</span>
+          <span class="marquee-platform"><span class="dot dot-twitch"></span>Twitch</span>
+          <span class="marquee-platform"><span class="dot dot-youtube"></span>YouTube Live</span>
+          <span class="marquee-platform"><span class="dot dot-kick"></span>Kick</span>
+          <span class="marquee-platform"><span class="dot dot-rtmp"></span>Custom RTMP</span>
+          <span class="marquee-platform"><span class="dot dot-fb"></span>Facebook Live</span>
+          <span class="marquee-platform"><span class="dot dot-x"></span>X Live</span>
+          <span class="marquee-platform"><span class="dot dot-trovo"></span>Trovo</span>
+        </div>
+        <div class="marquee-row" aria-hidden="true">
+          <span class="marquee-label">Streams to</span>
+          <span class="marquee-platform"><span class="dot dot-twitch"></span>Twitch</span>
+          <span class="marquee-platform"><span class="dot dot-youtube"></span>YouTube Live</span>
+          <span class="marquee-platform"><span class="dot dot-kick"></span>Kick</span>
+          <span class="marquee-platform"><span class="dot dot-rtmp"></span>Custom RTMP</span>
+          <span class="marquee-platform"><span class="dot dot-fb"></span>Facebook Live</span>
+          <span class="marquee-platform"><span class="dot dot-x"></span>X Live</span>
+          <span class="marquee-platform"><span class="dot dot-trovo"></span>Trovo</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════ MANIFESTO ════════════════════ -->
+    <section class="manifesto">
+      <div class="manifesto-inner">
+        <div class="manifesto-eyebrow" data-reveal>Why we built this</div>
+        <p class="manifesto-text" data-reveal>
+          Streaming software was built in 2012, for people with production teams.
+          <span class="manifesto-soft">Solo streamers got the leftovers — five apps glued together, a moderator they can't afford, and chat going feral around hour two.</span>
+          Cohost is the streaming app for the way streamers actually stream now: alone, late at night, and tired.
+        </p>
+      </div>
+    </section>
+
+    <!-- ════════════════════ FEATURE 1 — SIDEKICK ════════════════════ -->
+    <section class="feature feature-flip" id="sidekick">
+      <div class="feature-inner">
+        <div class="feature-copy" data-reveal>
+          <div class="feature-eyebrow">
+            <span class="feature-eyebrow-num">01</span>
+            <span>The cohost</span>
+          </div>
+          <h2 class="feature-title">An AI that<br>actually understands<br>chat.</h2>
+          <p class="feature-desc">
+            Cohost reads every message across every connected platform, picks the ones worth your attention, and reads them aloud while you keep streaming. Trolls get flagged automatically. Mood gets tracked across the room. You answer the question — Cohost speaks in your voice to the people listening.
+          </p>
+          <ul class="feature-points">
+            <li><span class="feature-point-dot"></span>Reads aloud, in your voice</li>
+            <li><span class="feature-point-dot"></span>Auto-flags trolls + spam</li>
+            <li><span class="feature-point-dot"></span>Surfaces VIPs and subs</li>
+            <li><span class="feature-point-dot"></span>Tracks mood across the chat</li>
+          </ul>
+        </div>
+
+        <!-- Product mockup: AI sidekick UI -->
+        <div class="feature-art" data-reveal data-feature-art="sidekick">
+          <div class="frame">
+            <div class="frame-bezel">
+              <span class="frame-dot"></span>
+              <span class="frame-dot"></span>
+              <span class="frame-dot"></span>
+              <span class="frame-title">Cohost · Chat</span>
+            </div>
+            <div class="frame-body sidekick-body">
+              <div class="sk-card">
+                <div class="sk-card-h">
+                  <div>
+                    <div class="sk-card-title">AI Sidekick</div>
+                    <div class="sk-card-sub">Reads chat aloud · Flags trolls · Tracks mood</div>
+                  </div>
+                  <div class="sk-status">
+                    <span class="sk-status-dot"></span>
+                    <span>ON</span>
+                  </div>
+                </div>
+
+                <div class="sk-bubble">
+                  <div class="sk-av">AI</div>
+                  <div class="sk-bubble-body">
+                    <div class="sk-bubble-eye">
+                      Reading aloud
+                      <span class="sk-wave"><span></span><span></span><span></span><span></span></span>
+                    </div>
+                    <div class="sk-bubble-text">"Hey jules — _maple just asked which mouse you're using."</div>
+                  </div>
+                </div>
+
+                <ul class="sk-list">
+                  <li class="sk-msg">
+                    <span class="sk-handle sk-twitch">vexnight</span>
+                    <span class="sk-body">first stream of the year letsgooo</span>
+                    <span class="sk-time">17:42</span>
+                  </li>
+                  <li class="sk-msg sk-msg-vip">
+                    <span class="sk-handle sk-yt">_maple</span>
+                    <span class="sk-body">subbed for 12 months — love the new setup</span>
+                    <span class="sk-time">17:42</span>
+                  </li>
+                  <li class="sk-msg sk-msg-read">
+                    <span class="sk-handle sk-twitch">_maple</span>
+                    <span class="sk-body">what mouse do you use?</span>
+                    <span class="sk-time">17:43</span>
+                  </li>
+                  <li class="sk-msg sk-msg-flag">
+                    <span class="sk-handle sk-kick">troll_2008</span>
+                    <span class="sk-body">first lol get good</span>
+                    <span class="sk-time">17:43</span>
+                  </li>
+                  <li class="sk-msg">
+                    <span class="sk-handle sk-yt">kira.dev</span>
+                    <span class="sk-body">audio sounds clean today</span>
+                    <span class="sk-time">17:43</span>
+                  </li>
+                  <li class="sk-msg">
+                    <span class="sk-handle sk-twitch">harlow</span>
+                    <span class="sk-body">POG that overlay is sick</span>
+                    <span class="sk-time">17:44</span>
+                  </li>
+                </ul>
+
+                <div class="sk-stats">
+                  <div class="sk-stat"><div class="sk-stat-n">47</div><div class="sk-stat-l">Read</div></div>
+                  <div class="sk-stat"><div class="sk-stat-n">5</div><div class="sk-stat-l">Flagged</div></div>
+                  <div class="sk-stat"><div class="sk-stat-n">12</div><div class="sk-stat-l">VIPs</div></div>
+                  <div class="sk-stat"><div class="sk-stat-n sk-stat-mood">Hyped</div><div class="sk-stat-l">Mood</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════ FEATURE 2 — MULTISTREAM ════════════════════ -->
+    <section class="feature" id="multistream">
+      <div class="feature-inner">
+        <div class="feature-copy" data-reveal>
+          <div class="feature-eyebrow">
+            <span class="feature-eyebrow-num">02</span>
+            <span>Multistream</span>
+          </div>
+          <h2 class="feature-title">One stream.<br>Three platforms.<br>Zero compromises.</h2>
+          <p class="feature-desc">
+            Your audience isn't on one platform anymore. Cohost broadcasts to Twitch, YouTube Live, and Kick simultaneously — same encode, three RTMP destinations, no relay service skimming your bitrate. Stream once, reach everyone.
+          </p>
+          <ul class="feature-points">
+            <li><span class="feature-point-dot"></span>One CPU encode, three outputs</li>
+            <li><span class="feature-point-dot"></span>NVENC for GPU offload</li>
+            <li><span class="feature-point-dot"></span>Per-platform title + category sync</li>
+            <li><span class="feature-point-dot"></span>Custom RTMP for everywhere else</li>
+          </ul>
+        </div>
+
+        <div class="feature-art" data-reveal data-feature-art="multi">
+          <div class="frame">
+            <div class="frame-bezel">
+              <span class="frame-dot"></span>
+              <span class="frame-dot"></span>
+              <span class="frame-dot"></span>
+              <span class="frame-title">Cohost · Broadcast</span>
+              <span class="frame-live"><span class="frame-live-dot"></span>LIVE</span>
+            </div>
+            <div class="frame-body multi-body">
+              <div class="multi-stage">
+                <div class="multi-hub">
+                  <img src="assets/cohost-app-icon.png" alt="" />
+                </div>
+                <div class="multi-line multi-line-tw"></div>
+                <div class="multi-line multi-line-yt"></div>
+                <div class="multi-line multi-line-kk"></div>
+                <div class="multi-pill multi-tw">
+                  <span class="dot"></span>
+                  <div>
+                    <div class="multi-pill-name">Twitch</div>
+                    <div class="multi-pill-stat">6.0 Mbps · live</div>
+                  </div>
+                </div>
+                <div class="multi-pill multi-yt">
+                  <span class="dot"></span>
+                  <div>
+                    <div class="multi-pill-name">YouTube</div>
+                    <div class="multi-pill-stat">9.0 Mbps · live</div>
+                  </div>
+                </div>
+                <div class="multi-pill multi-kk">
+                  <span class="dot"></span>
+                  <div>
+                    <div class="multi-pill-name">Kick</div>
+                    <div class="multi-pill-stat">6.0 Mbps · live</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════ FEATURE 3 — STUDIO ════════════════════ -->
+    <section class="feature feature-flip" id="studio">
+      <div class="feature-inner">
+        <div class="feature-copy" data-reveal>
+          <div class="feature-eyebrow">
+            <span class="feature-eyebrow-num">03</span>
+            <span>Studio</span>
+          </div>
+          <h2 class="feature-title">A control room.<br>In one window.</h2>
+          <p class="feature-desc">
+            Cameras, screen capture, scenes, overlays, audio mixer — everything you'd assemble in OBS, built into Cohost from day one. Drag overlays into place. Voice-switch scenes mid-stream. Resize like Figma.
+          </p>
+          <ul class="feature-points">
+            <li><span class="feature-point-dot"></span>Drag + 8-handle resize on every overlay</li>
+            <li><span class="feature-point-dot"></span>Voice-switch scenes ("BRB", "Just Chat")</li>
+            <li><span class="feature-point-dot"></span>Built-in mixer, alerts, auto-clips</li>
+            <li><span class="feature-point-dot"></span>Native NVENC + 1080p60 + 4K</li>
+          </ul>
+        </div>
+
+        <div class="feature-art" data-reveal data-feature-art="studio">
+          <div class="frame">
+            <div class="frame-bezel">
+              <span class="frame-dot"></span>
+              <span class="frame-dot"></span>
+              <span class="frame-dot"></span>
+              <span class="frame-title">Cohost · Studio</span>
+            </div>
+            <div class="frame-body studio-body">
+              <div class="studio-canvas">
+                <div class="studio-cam"></div>
+                <div class="studio-overlay studio-text">LIVE WITH JULES</div>
+                <div class="studio-overlay studio-stat">
+                  <div class="studio-stat-row"><span>Mic</span><span class="studio-meter"><span style="--p:.7"></span></span><span class="studio-stat-val">−12</span></div>
+                  <div class="studio-stat-row"><span>Game</span><span class="studio-meter"><span style="--p:.45"></span></span><span class="studio-stat-val">−24</span></div>
+                  <div class="studio-stat-row"><span>Music</span><span class="studio-meter"><span style="--p:.25"></span></span><span class="studio-stat-val">−36</span></div>
+                </div>
+                <div class="studio-handle studio-handle-nw"></div>
+                <div class="studio-handle studio-handle-ne"></div>
+                <div class="studio-handle studio-handle-sw"></div>
+                <div class="studio-handle studio-handle-se"></div>
+                <div class="studio-readout">
+                  <span>00:14:32</span>
+                  <span>1080p60</span>
+                  <span>3500 kbps</span>
+                </div>
+              </div>
+              <div class="studio-rail">
+                <div class="studio-rail-h">Scenes</div>
+                <ul class="studio-rail-list">
+                  <li class="studio-rail-item is-active"><span class="studio-rail-num">1</span>Main</li>
+                  <li class="studio-rail-item"><span class="studio-rail-num">2</span>BRB</li>
+                  <li class="studio-rail-item"><span class="studio-rail-num">3</span>Just Chat</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════ MINOR FEATURES ════════════════════ -->
+    <section class="minor">
+      <header class="section-h" data-reveal>
+        <h2 class="section-title">And a hundred small things<br><span class="section-title-soft">that quietly add up.</span></h2>
+      </header>
+
+      <div class="minor-grid">
+        <article class="minor-card" data-reveal>
+          <div class="minor-glyph">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          </div>
+          <h3 class="minor-name">Voice control</h3>
+          <p class="minor-desc">"Switch to BRB", "save that clip", "mute mic". Run the whole stream without touching the keyboard.</p>
+        </article>
+
+        <article class="minor-card" data-reveal style="--delay: 60ms">
+          <div class="minor-glyph">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M9 12l4-2v4z" fill="currentColor"/></svg>
+          </div>
+          <h3 class="minor-name">Auto-clips</h3>
+          <p class="minor-desc">Listens for your reactions. Saves the 30 seconds before, after, and during. Highlights ready when you sign off.</p>
+        </article>
+
+        <article class="minor-card" data-reveal style="--delay: 120ms">
+          <div class="minor-glyph">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14M5 8h14M5 12h10M5 16h7"/></svg>
+          </div>
+          <h3 class="minor-name">Title + category sync</h3>
+          <p class="minor-desc">Set your title and game once. Cohost pushes both to Twitch every time you go live — no dashboard tab open.</p>
+        </article>
+
+        <article class="minor-card" data-reveal style="--delay: 180ms">
+          <div class="minor-glyph">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h3l3-9 6 18 3-9h3"/></svg>
+          </div>
+          <h3 class="minor-name">Real-time mixer</h3>
+          <p class="minor-desc">Per-source ducking, sub-millisecond latency, transparent NDI bridge. Audio engineering you don't have to think about.</p>
+        </article>
+
+        <article class="minor-card" data-reveal style="--delay: 240ms">
+          <div class="minor-glyph">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3 class="minor-name">Local recording</h3>
+          <p class="minor-desc">Always-on local MP4 archive. Never lose a stream to Twitch's 14-day clip retention again.</p>
+        </article>
+
+        <article class="minor-card" data-reveal style="--delay: 300ms">
+          <div class="minor-glyph">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <h3 class="minor-name">Privacy by default</h3>
+          <p class="minor-desc">No telemetry. No usage analytics. Whisper runs on your machine. Your stream is yours.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ════════════════════ PRICING ════════════════════ -->
+    <section class="pricing" id="pricing">
+      <div class="pricing-card" data-reveal>
+        <div class="pricing-grid">
+          <div>
+            <div class="pricing-eyebrow">Pricing</div>
+            <h2 class="pricing-title">Free during alpha.<br>Founder pricing for life.</h2>
+            <p class="pricing-sub">When paid plans launch, waitlist signups lock in our lowest tier — forever. No expiring trials. No bait-and-switch. Just a thank-you for showing up early.</p>
+            <a href="#waitlist" class="btn-primary btn-lg">
+              <span class="btn-label">Join the waitlist</span>
+              <svg class="btn-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"/></svg>
+            </a>
+          </div>
+          <ul class="pricing-list">
+            <li><span class="pricing-check">✓</span>Free during the entire alpha</li>
+            <li><span class="pricing-check">✓</span>Founder pricing locked in forever</li>
+            <li><span class="pricing-check">✓</span>Direct line to the team</li>
+            <li><span class="pricing-check">✓</span>First access to new features</li>
+            <li><span class="pricing-check">✓</span>No credit card to join</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════ FAQ ════════════════════ -->
+    <section class="faq" id="faq">
+      <header class="section-h" data-reveal>
+        <h2 class="section-title">Questions,<br><span class="section-title-soft">answered.</span></h2>
+      </header>
+
+      <div class="faq-list">
+        <details class="faq-item" data-reveal>
+          <summary>When can I use Cohost?</summary>
+          <p>We're rolling out alpha invites in waves. Most waitlist signups get in within two weeks. Bigger waves go out after each batch of feedback.</p>
+        </details>
+        <details class="faq-item" data-reveal>
+          <summary>Will it cost money?</summary>
+          <p>Cohost is free during the alpha. Paid plans come later — and waitlist signups get founder pricing locked in for life. We won't bait-and-switch you.</p>
+        </details>
+        <details class="faq-item" data-reveal>
+          <summary>Which platforms does it stream to?</summary>
+          <p>Twitch, YouTube Live, and Kick out of the box, all at the same time. Any service that accepts standard RTMP works too — paste a server URL and stream key.</p>
+        </details>
+        <details class="faq-item" data-reveal>
+          <summary>Do I still need OBS or Streamlabs?</summary>
+          <p>No. Cohost is a complete control room — cameras, screen capture, overlays, scenes, mixer, alerts. The AI is on top, not the entire app.</p>
+        </details>
+        <details class="faq-item" data-reveal>
+          <summary>What hardware do I need?</summary>
+          <p>Anything that runs OBS will run Cohost. NVIDIA GPUs unlock NVENC encoding, which moves the heavy lifting off your CPU and lets you stream at higher quality with no frame drops.</p>
+        </details>
+        <details class="faq-item" data-reveal>
+          <summary>Is the AI cohost optional?</summary>
+          <p>Yes. Cohost works as a regular streaming app even if you turn the AI off. The sidekick is a feature, not a requirement.</p>
+        </details>
+        <details class="faq-item" data-reveal>
+          <summary>Where does my data go?</summary>
+          <p>Voice transcription runs locally via Whisper. Chat moderation runs through our hosted classifier — message text only, never your viewers' personal data. We don't sell anything to anyone.</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- ════════════════════ CTA ════════════════════ -->
+    <section class="cta" id="waitlist">
+      <div class="cta-glow"></div>
+      <div class="cta-inner" data-reveal>
+        <h2 class="cta-title">Be first<br>in line.</h2>
+        <p class="cta-sub">Join the waitlist for early access. Free during alpha. Founder pricing locked in.</p>
+        <form class="waitlist waitlist-large" id="waitlistForm" action="/api/waitlist" method="POST" novalidate>
+          <input type="email" name="email" placeholder="you@stream.gg" required autocomplete="email" />
+          <button type="submit" class="btn-primary">
+            <span class="btn-label">Join waitlist</span>
+            <svg class="btn-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"/></svg>
+          </button>
+          <input type="hidden" name="source" value="cta" />
+        </form>
+        <p class="cta-fineprint">No spam. Just launch updates. Unsubscribe any time.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ════════════════════ FOOTER ════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-col footer-brand-col">
+        <a class="footer-brand" href="#top">
+          <img src="assets/cohost-app-icon.png" alt="" />
+          <span>Cohost</span>
+        </a>
+        <p class="footer-tagline">The AI cohost that streams with you.</p>
+        <div class="footer-version">v0.1 · Alpha · 2026</div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-h">Product</div>
+        <a href="#sidekick">AI Sidekick</a>
+        <a href="#multistream">Multistream</a>
+        <a href="#studio">Studio</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-h">Company</div>
+        <a href="#waitlist">Waitlist</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://x.com/CohostLive" target="_blank" rel="noopener">@CohostLive</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-h">Legal</div>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/privacy.html">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-band">
+      <div class="footer-band-inner">
+        <div>© 2026 Cohost™. Built in alpha. All rights reserved.</div>
+        <div class="footer-band-meta">Cohost is an unregistered trademark.</div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

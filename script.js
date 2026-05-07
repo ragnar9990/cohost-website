@@ -178,4 +178,63 @@
       showToast('Coming soon.');
     });
   });
+
+  // ─── App-mock live feed cycler ─────────────────────────────────
+  // Continuously prepend new messages to the AI Cohost feed inside
+  // the appmock so the demo feels alive. Pauses when offscreen.
+  (function feedCycle() {
+    const feed = document.querySelector('.appmock-feed');
+    if (!feed) return;
+
+    const pool = [
+      { tag: 'read',    cls: 'appmock-feed-read',  msg: '<b>vexalune</b> tipped $10: "first-time clip — let\'s go"' },
+      { tag: 'flagged', cls: 'appmock-feed-flag',  msg: 'message hidden — scam-link filter' },
+      { tag: 'vip',     cls: 'appmock-feed-vip',   msg: '<b>nova_42</b> just subscribed — 3 months in a row' },
+      { tag: 'clipped', cls: 'appmock-feed-clip',  msg: 'audio spike detected — saved <code>clip-23-22-04.webm</code>' },
+      { tag: 'read',    cls: 'appmock-feed-read',  msg: '<b>kaiana</b> in chat: "what controller are you on?"' },
+      { tag: 'vip',     cls: 'appmock-feed-vip',   msg: '<b>retroband</b> · raid of 47 viewers from twitch' },
+      { tag: 'flagged', cls: 'appmock-feed-flag',  msg: 'spammer cooled down — 6 messages, 3 min mute' },
+      { tag: 'clipped', cls: 'appmock-feed-clip',  msg: 'chat heat-wave — saved <code>clip-23-19-51.webm</code>' },
+      { tag: 'read',    cls: 'appmock-feed-read',  msg: '<b>mossglow</b> tipped $3: "thanks for keeping it real"' },
+    ];
+    let idx = pool.length;  // start beyond initial set so we don't repeat first
+    let visible = false;
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }, { threshold: 0.2 });
+    io.observe(feed);
+
+    function tick() {
+      if (!visible) return;
+      const item = pool[idx % pool.length];
+      idx++;
+
+      const now = new Date();
+      const t = String(now.getHours()).padStart(2, '0') + ':' +
+                String(now.getMinutes()).padStart(2, '0');
+
+      const li = document.createElement('li');
+      li.className = `appmock-feed-row ${item.cls}`;
+      li.style.animation = 'feed-in 0.45s ease both';
+      li.innerHTML = `
+        <span class="appmock-feed-tag">${item.tag}</span>
+        <span class="appmock-feed-msg">${item.msg}</span>
+        <span class="appmock-feed-t">${t}</span>
+      `;
+      feed.insertBefore(li, feed.firstChild);
+
+      // Trim to 4 visible — fade out the oldest
+      while (feed.children.length > 4) {
+        const last = feed.lastElementChild;
+        last.style.transition = 'opacity 0.4s, transform 0.4s';
+        last.style.opacity = '0';
+        last.style.transform = 'translateY(8px)';
+        setTimeout(() => last.remove(), 400);
+        // Break so we only remove one per tick
+        break;
+      }
+    }
+
+    setInterval(tick, 3200);
+  })();
 })();

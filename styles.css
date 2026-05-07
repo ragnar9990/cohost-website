@@ -285,6 +285,10 @@ strong { font-weight: 600; color: var(--fg); }
   letter-spacing: 0.04em;
 }
 .btn-primary-form { width: 100%; max-width: 460px; }
+/* On full-width / explicit-width primary buttons, stretch the left half to
+   fill the gap so the inner split-pill doesn't leave dead white space in
+   the middle of the button. */
+.btn-primary-form .btn-primary-l { flex: 1 1 auto; }
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
   font-weight: 500; font-size: 14.5px;

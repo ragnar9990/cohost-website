@@ -1017,8 +1017,7 @@ strong { font-weight: 600; color: var(--fg); }
   .section-sub { font-size: 15px; margin-bottom: 32px; }
 
   /* App preview — no horizontal scroll, tighter card */
-  .product-video { aspect-ratio: 4/3; margin: 24px 0 36px; }
-  .appmock { font-size: 12px; }
+  .appmock { font-size: 12px; margin-top: 24px; }
   .appmock-titlebar { height: 34px; padding: 0 10px; }
   .appmock-title-mark { font-size: 13px; }
   .appmock-air { display: none; }

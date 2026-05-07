@@ -63,6 +63,16 @@ button { font: inherit; background: none; border: none; color: inherit; cursor: 
 input, textarea { font: inherit; color: inherit; background: none; border: none; outline: none; }
 strong { font-weight: 600; color: var(--fg); }
 
+/* Visible focus ring for keyboard users — quietly polished, not loud */
+:focus-visible {
+  outline: 2px solid rgba(239, 68, 68, 0.5);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.btn-primary:focus-visible,
+.rail-cta:focus-visible,
+.waitlist input:focus-visible { outline: none; }
+
 ::selection { background: var(--live); color: var(--bg); }
 
 .sr-only {
@@ -641,11 +651,45 @@ strong { font-weight: 600; color: var(--fg); }
   border-radius: 12px;
   background: var(--bg-2);
   overflow: hidden;
-  transition: border-color 0.2s, background 0.2s, transform 0.4s;
+  transition: border-color 0.2s, background 0.2s, transform 0.4s, box-shadow 0.2s;
   opacity: 0; transform: translateY(14px);
 }
 .ai-card.is-visible { opacity: 1; transform: translateY(0); }
-.ai-card:hover { border-color: var(--border-2); background: var(--bg-3); }
+.ai-card::after {
+  /* subtle red corner glow on hover — atmospheric, not loud */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 100% 0%, rgba(239, 68, 68, 0.10), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.ai-card:hover {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: var(--bg-3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+.ai-card:hover::after { opacity: 1; }
+.ai-card:hover .ai-icon {
+  color: var(--live);
+  transform: scale(1.06);
+}
+
+/* Feature icon — top-right corner of each card. Subtle by default, colored on hover. */
+.ai-icon {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  width: 22px; height: 22px;
+  color: var(--fg-faint);
+  opacity: 0.85;
+  transition: color 0.2s, transform 0.25s, opacity 0.2s;
+}
+.ai-icon-lg {
+  width: 28px; height: 28px;
+  top: 36px; right: 36px;
+}
 .ai-card-lg {
   grid-column: span 2; grid-row: span 2;
   padding: 40px 36px 36px;
@@ -775,6 +819,11 @@ strong { font-weight: 600; color: var(--fg); }
   padding: 4px 8px;
   border: 1px solid var(--live); border-radius: 3px;
   background: rgba(239, 68, 68, 0.06);
+  animation: lockedFlicker 4s ease-in-out infinite;
+}
+@keyframes lockedFlicker {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  50%      { box-shadow: 0 0 16px 0 rgba(239, 68, 68, 0.3); }
 }
 .price-label {
   font-family: var(--font-mono);
@@ -835,7 +884,11 @@ strong { font-weight: 600; color: var(--fg); }
   transition: border-color 0.15s, background 0.15s;
 }
 .waitlist input::placeholder { color: var(--fg-faint); }
-.waitlist input:focus { border-color: var(--fg); background: var(--bg-3); }
+.waitlist input:focus {
+  border-color: var(--fg);
+  background: var(--bg-3);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06);
+}
 .waitlist .btn-primary-form { height: 56px; width: auto; }
 .waitlist .btn-primary-form .btn-primary-l { padding: 0 18px 0 22px; }
 .waitlist .btn-primary-form .btn-primary-r { padding: 0 22px 0 16px; }

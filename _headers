@@ -1,0 +1,18 @@
+# Cloudflare Pages — HTTP headers
+# Disable HTML caching so site updates are visible immediately.
+# Static assets (css/js/images) get longer cache + revalidation.
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+/*.css
+  Cache-Control: public, max-age=300, must-revalidate
+
+/*.js
+  Cache-Control: public, max-age=300, must-revalidate
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
